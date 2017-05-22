@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.xiangfan.sine.SineGame;
 import com.xiangfan.sine.sprites.Bird;
@@ -33,8 +34,11 @@ public class PlayState extends State {
         bird = new Bird(50, 300);
         bg = new Texture("bg.png");
         score = 0;
+
         font = new BitmapFont();
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+        font.setUseIntegerPositions(false);
 
         tubes = new Array<Tube>();
 

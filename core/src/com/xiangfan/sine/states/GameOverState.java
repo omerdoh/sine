@@ -26,7 +26,9 @@ public class GameOverState extends State {
         }
         cam.setToOrtho(false, SineGame.WIDTH / 2, SineGame.HEIGHT / 2);
         this.score = score;
+
         font = new BitmapFont();
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
         font.getData().setScale(2);
 
@@ -58,7 +60,7 @@ public class GameOverState extends State {
         sb.draw(background, 0, 0);
         sb.draw(playButton, cam.position.x - playButton.getWidth() / 2, cam.position.y - 65);
         font.draw(sb, "GAME OVER", cam.position.x - 89, cam.position.y + 100 );
-        font.draw(sb, Integer.toString(score), cam.position.x - 5, cam.position.y + 170);
+        font.draw(sb, Integer.toString(score), cam.position.x, cam.position.y + 170);
         font.draw(sb, "Toppest " + Integer.toString(getHighScore()) , cam.position.x - 65, cam.position.y + 57);
 
         sb.end();
