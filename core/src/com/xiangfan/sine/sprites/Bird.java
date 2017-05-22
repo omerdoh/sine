@@ -19,8 +19,8 @@ public class Bird {
         return bird;
     }
 
-    private static final int MOVEMENT = 100;
-    private int GRAVITY = -15;
+    private static final int MOVEMENT = 150;
+    private int GRAVITY = -10;
 
     private Vector3 position;
     private Vector3 velocity;

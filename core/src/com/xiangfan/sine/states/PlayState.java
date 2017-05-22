@@ -74,7 +74,7 @@ public class PlayState extends State {
             }
 
             if (tube.collides(bird.getBounds())){
-               // gsm.set(new GameOverState(gsm, score));
+                gsm.set(new GameOverState(gsm, score));
             }
         }
 
