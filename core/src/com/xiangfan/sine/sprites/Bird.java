@@ -60,5 +60,8 @@ public class Bird {
         return position.x;
     }
 
+    public void dispose(){
+        bird.dispose();
+    }
 }
 

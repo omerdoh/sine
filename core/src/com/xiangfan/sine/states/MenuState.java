@@ -13,11 +13,6 @@ public class MenuState extends State{
     private Texture background;
     private Texture playButton;
 
-    @Override
-    public void dispose() {
-        background.dispose();
-        playButton.dispose();
-    }
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
@@ -31,7 +26,6 @@ public class MenuState extends State{
     public void handleInput() {
         if (Gdx.input.justTouched()) {
             gsm.set(new PlayState(gsm));
-            dispose();
         }
 
     }
@@ -49,5 +43,13 @@ public class MenuState extends State{
         sb.draw(background, 0, 0);
         sb.draw(playButton, cam.position.x - playButton.getWidth() / 2, cam.position.y);
         sb.end();
+    }
+
+
+    @Override
+    public void dispose() {
+        background.dispose();
+        playButton.dispose();
+        System.out.println("Play state disposed");
     }
 }
