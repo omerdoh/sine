@@ -88,8 +88,6 @@ public class PlayState extends State {
         sb.draw(bg, cam.position.x - (cam.viewportWidth / 2), 0);
         sb.draw(bird.getBird(), bird.getPosition().x, bird.getPosition().y);
 
-        System.out.println("Score " + score);
-
         for (Tube tube : tubes){
             sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
             sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
@@ -97,9 +95,6 @@ public class PlayState extends State {
         }
         font.draw(sb, Integer.toString(score), cam.position.x - 7, cam.position.y + 190);
         sb.end();
-
-
-
     }
 
     @Override
@@ -114,7 +109,4 @@ public class PlayState extends State {
 
         System.out.println("Play state disposed");
     }
-
-
-
 }
