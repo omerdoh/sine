@@ -20,7 +20,7 @@ public class Bird {
     }
 
     private static final int MOVEMENT = 100;
-    private static final int GRAVITY = -15;
+    private int GRAVITY = -15;
 
     private Vector3 position;
     private Vector3 velocity;
@@ -34,6 +34,7 @@ public class Bird {
         bird = new Texture("bird.png");
         bounds = new Rectangle(x, y, bird.getWidth(), bird.getHeight());
         flap = Gdx.audio.newSound(Gdx.files.internal("flap.wav"));
+
     }
 
     public void update(float dt) {
@@ -43,7 +44,7 @@ public class Bird {
         }
 
         velocity.scl(dt);
-        position.add(MOVEMENT  * dt, velocity.y, 0);
+        position.add(MOVEMENT * dt, velocity.y, 0);
         if (position.y < 0) {
             position.y = 0;
         }
@@ -53,7 +54,8 @@ public class Bird {
     }
 
     public void jump(){
-        velocity.y = 250;
+        //velocity.y = 250;
+        GRAVITY *= -1;
         flap.play();
     }
 

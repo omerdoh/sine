@@ -38,7 +38,7 @@ public class PlayState extends State {
 
         tubes = new Array<Tube>();
 
-        for (int i = 1; i <= TUBE_COUNT; i++){
+        for (int i = 2; i <= TUBE_COUNT + 12; i++){
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
         }
 
@@ -58,7 +58,7 @@ public class PlayState extends State {
         cam.position.x = bird.getPosition().x + 80;
 
         if (bird.getPosition().y <= 0  || bird.getPosition().y >= cam.viewportHeight) {
-            gsm.set(new PlayState(gsm));
+            gsm.set(new GameOverState(gsm, score));
         }
 
         for (int i = 0; i < tubes.size; i++) {
@@ -74,7 +74,7 @@ public class PlayState extends State {
             }
 
             if (tube.collides(bird.getBounds())){
-                gsm.set(new PlayState(gsm));
+                gsm.set(new GameOverState(gsm, score));
             }
         }
 
