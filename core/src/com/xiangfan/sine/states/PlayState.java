@@ -1,16 +1,18 @@
 package com.xiangfan.sine.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import com.xiangfan.sine.SineGame;
 import com.xiangfan.sine.sprites.Bird;
 import com.xiangfan.sine.sprites.Tube;
 
-import java.awt.Color;
 
 /**
  * Created by Xiang on 5/21/2017.
@@ -26,6 +28,10 @@ public class PlayState extends State {
     private BitmapFont font;
 
     private Array<Tube> tubes;
+    private Queue<Vector2> path;
+
+    private ShapeRenderer sr;
+
 
     protected PlayState(GameStateManager gsm) {
         super(gsm);
@@ -37,11 +43,13 @@ public class PlayState extends State {
         font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
 
         tubes = new Array<Tube>();
+        path = new Queue<Vector2>();
+        sr = new ShapeRenderer();
+        sr.setAutoShapeType(true);
 
         for (int i = 2; i <= TUBE_COUNT + 1; i++){
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
         }
-
     }
 
     @Override
@@ -55,7 +63,14 @@ public class PlayState extends State {
     public void update(float dt) {
         handleInput();
         bird.update(dt);
-        cam.position.x = bird.getPosition().x + 80;
+        if (path.size == 0 || !bird.getPosition().equals(path.last())) {
+            path.addLast(new Vector2(bird.getPosition().x, bird.getPosition().y));
+        }
+        if (path.size > 100) {
+            path.removeFirst();
+        }
+
+        cam.position.x = bird.getPosition().x;
 
         if (bird.getPosition().y <= 0  || bird.getPosition().y >= cam.viewportHeight) {
             gsm.set(new GameOverState(gsm, score));
@@ -86,15 +101,29 @@ public class PlayState extends State {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(bg, cam.position.x - (cam.viewportWidth / 2), 0);
-        sb.draw(bird.getBird(), bird.getPosition().x, bird.getPosition().y);
+
+        sb.draw(bird.getBird(),
+                bird.getPosition().x - bird.getBird().getWidth() / 2,
+                bird.getPosition().y - bird.getBird().getHeight() / 2);
 
         for (Tube tube : tubes){
             sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
             sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
 
         }
+
         font.draw(sb, Integer.toString(score), cam.position.x - 7, cam.position.y + 190);
         sb.end();
+
+        if (path.size > 0) {
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.setProjectionMatrix(cam.combined);
+            sr.setColor(Color.BLACK);
+            for (int i = 1; i < path.size; i++) {
+                sr.rectLine(path.get(i - 1).x, path.get(i - 1).y, path.get(i).x, path.get(i).y, 2f);
+            }
+            sr.end();
+        }
     }
 
     @Override

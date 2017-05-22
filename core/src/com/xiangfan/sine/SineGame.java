@@ -15,10 +15,8 @@ public class SineGame extends ApplicationAdapter {
 
 	private GameStateManager gsm;
 	private	SpriteBatch batch;
-
 	private Music music;
 
-	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -36,14 +34,11 @@ public class SineGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render(batch);
-
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
 		music.dispose();
-
-
 	}
 }
