@@ -68,6 +68,7 @@ public class GameOverState extends State {
     public void dispose() {
         background.dispose();
         playButton.dispose();
+        font.dispose();
         System.out.println("Game state disposed");
     }
 
