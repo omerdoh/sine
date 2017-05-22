@@ -32,13 +32,11 @@ public class Bird {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
         bird = new Texture("bird.png");
-        bounds = new Rectangle(x, y, bird.getWidth(), bird.getHeight());
+        bounds = new Rectangle(x - bird.getWidth() / 2, y - bird.getHeight() / 2, bird.getWidth(), bird.getHeight());
         flap = Gdx.audio.newSound(Gdx.files.internal("flap.wav"));
-
     }
 
     public void update(float dt) {
-
         if (position.y >0){
             velocity.add(0, GRAVITY, 0);
         }
@@ -54,7 +52,6 @@ public class Bird {
     }
 
     public void jump(){
-        //velocity.y = 250;
         GRAVITY *= -1;
         flap.play();
     }
