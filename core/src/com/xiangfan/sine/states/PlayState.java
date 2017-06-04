@@ -1,6 +1,7 @@
 package com.xiangfan.sine.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.Timer;
 import com.xiangfan.sine.SineGame;
 import com.xiangfan.sine.sprites.Bird;
 import com.xiangfan.sine.sprites.Tube;
@@ -21,16 +23,21 @@ import com.xiangfan.sine.sprites.Tube;
 public class PlayState extends State {
     private static final int TUBE_SPACING = 125;
     private static final int TUBE_COUNT = 4;
+    private static final int GROUND_Y_OFFSET = -50;
 
     private Bird bird;
     private Texture bg;
+    private Texture ground;
+    private Vector2 groundPos1, groundPos2;
     private int score;
     private BitmapFont font;
+    private boolean collision;
 
     private Array<Tube> tubes;
     private Queue<Vector2> path;
 
     private ShapeRenderer sr;
+    private Sound dead;
 
 
     protected PlayState(GameStateManager gsm) {
@@ -38,7 +45,12 @@ public class PlayState extends State {
         cam.setToOrtho(false, SineGame.WIDTH / 2, SineGame.HEIGHT / 2);
         bird = new Bird(50, 300);
         bg = new Texture("bg.png");
+        ground = new Texture("ground.png");
+        groundPos1 = new Vector2(cam.position.x - cam.viewportWidth, GROUND_Y_OFFSET);
+        groundPos2 = new Vector2(cam.position.x - cam.viewportWidth + ground.getWidth(), GROUND_Y_OFFSET);
         score = 0;
+        collision = false;
+        dead = Gdx.audio.newSound(Gdx.files.internal("collide.wav"));
 
         font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -64,39 +76,60 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
-        handleInput();
-        bird.update(dt);
-        if (path.size == 0 || !bird.getPosition().equals(path.last())) {
-            path.addLast(new Vector2(bird.getPosition().x, bird.getPosition().y));
-        }
-        if (path.size > 100) {
-            path.removeFirst();
-        }
+        if (!collision) {
+            handleInput();
+            updateGround();
+            bird.update(dt);
 
-        cam.position.x = bird.getPosition().x;
-
-        if (bird.getPosition().y <= 0  || bird.getPosition().y >= cam.viewportHeight) {
-            gsm.set(new GameOverState(gsm, score));
-        }
-
-        for (int i = 0; i < tubes.size; i++) {
-            Tube tube = tubes.get(i);
-            if (cam.position.x - cam.viewportWidth / 2 > tube.getPosTopTube().x + tube.getTopTube().getWidth()){
-                tube.reposition(tube.getPosTopTube().x + (Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT);
-                tube.setChecked(false);
+            if (path.size == 0 || !bird.getPosition().equals(path.last())) {
+                path.addLast(new Vector2(bird.getPosition().x, bird.getPosition().y));
+            }
+            if (path.size > 100) {
+                path.removeFirst();
             }
 
-            if (bird.getPosition().x >= tube.getPosBottomTube().x && !tube.hasChecked()) {
-                tube.setChecked(true);
-                score++;
+            cam.position.x = bird.getPosition().x;
+
+            if (bird.getPosition().y - bird.getBird().getHeight() / 2 <= ground.getHeight() + GROUND_Y_OFFSET ||
+                    bird.getPosition().y + bird.getBird().getHeight() / 2 >= cam.viewportHeight) {
+                collision = true;
+                dead.play();
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        gsm.set(new GameOverState(gsm, score));
+                    }
+                }, 1.0f);
+                return;
             }
 
-            if (tube.collides(bird.getBounds())){
-                gsm.set(new GameOverState(gsm, score));
+            for (int i = 0; i < tubes.size; i++) {
+                Tube tube = tubes.get(i);
+                if (cam.position.x - cam.viewportWidth / 2 > tube.getPosTopTube().x + tube.getTopTube().getWidth()) {
+                    tube.reposition(tube.getPosTopTube().x + (Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT);
+                    tube.setChecked(false);
+                }
+
+                if (bird.getPosition().x >= tube.getPosBottomTube().x && !tube.hasChecked()) {
+                    tube.setChecked(true);
+                    score++;
+                }
+
+                if (tube.collides(bird.getBounds())) {
+                    collision = true;
+                    dead.play();
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            gsm.set(new GameOverState(gsm, score));
+                        }
+                    }, 1.0f);
+                    return;
+                }
             }
+
+            cam.update();
         }
-
-        cam.update();
     }
 
     @Override
@@ -112,8 +145,10 @@ public class PlayState extends State {
         for (Tube tube : tubes){
             sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
             sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
-
         }
+
+        sb.draw(ground, groundPos1.x, groundPos1.y);
+        sb.draw(ground, groundPos2.x, groundPos2.y);
 
         font.draw(sb, Integer.toString(score), cam.position.x - 7, cam.position.y + 190);
         sb.end();
@@ -134,11 +169,23 @@ public class PlayState extends State {
         font.dispose();
         bg.dispose();
         bird.dispose();
+        dead.dispose();
+        ground.dispose();
+        sr.dispose();
 
         for (Tube tube : tubes) {
             tube.dispose();
         }
 
         System.out.println("Play state disposed");
+    }
+
+    private void updateGround() {
+        if (cam.position.x - cam.viewportWidth / 2 > groundPos1.x + ground.getWidth()) {
+            groundPos1.add(ground.getWidth() * 2, 0);
+        }
+        if (cam.position.x - cam.viewportWidth / 2 > groundPos2.x + ground.getWidth()) {
+            groundPos2.add(ground.getWidth() * 2, 0);
+        }
     }
 }

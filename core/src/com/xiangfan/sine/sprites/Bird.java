@@ -37,7 +37,11 @@ public class Bird {
     }
 
     public void update(float dt) {
-        if (position.y >0){
+        if (dt == 0) {
+            return;
+        }
+
+        if (position.y > 0){
             velocity.add(0, GRAVITY, 0);
         }
 
@@ -48,7 +52,7 @@ public class Bird {
         }
 
         velocity.scl(1 / dt);
-        bounds.setPosition(position.x, position.y);
+        bounds.setPosition(position.x - bird.getWidth() / 2, position.y - bird.getHeight() / 2);
     }
 
     public void jump(){
@@ -58,10 +62,6 @@ public class Bird {
 
     public Rectangle getBounds(){
         return bounds;
-    }
-
-    public float getDistance() {
-        return position.x;
     }
 
     public void dispose(){
