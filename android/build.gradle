@@ -19,11 +19,15 @@ android {
     }
     defaultConfig {
         applicationId "com.xiangfan.sine"
-        minSdkVersion 9
+        minSdkVersion 15
         targetSdkVersion 25
+        multiDexEnabled true
     }
 }
 
+dependencies {
+    compile 'com.android.support:multidex:1.0.0'
+}
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders

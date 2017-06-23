@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <string name="app_id">281961290493</string>
+    <string name="package_name">com.xiangfan.sine</string>
+    <string name="achievement_first_tube">CgkI_bXPsZoIEAIQAQ</string>
+    <string name="achievement_bronze_trophy">CgkI_bXPsZoIEAIQAg</string>
+    <string name="achievement_silver_trophy">CgkI_bXPsZoIEAIQAw</string>
+    <string name="achievement_gold_trophy">CgkI_bXPsZoIEAIQBA</string>
+    <string name="achievement_master">CgkI_bXPsZoIEAIQBQ</string>
+    <string name="leaderboard_highscore">CgkI_bXPsZoIEAIQBg</string>
+</resources>

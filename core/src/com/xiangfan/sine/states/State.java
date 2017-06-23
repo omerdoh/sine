@@ -3,6 +3,7 @@ package com.xiangfan.sine.states;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.xiangfan.sine.playservices.PlayServices;
 
 
 /**
@@ -10,13 +11,19 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public abstract class State {
+    protected static final int BUTTON_WIDTH = 90;
+    protected static final int BUTTON_HEIGHT = 55;
+
 
     protected OrthographicCamera cam;
     protected Vector3 mouse;
     protected GameStateManager gsm;
 
-    protected State(GameStateManager gsm){
+    protected PlayServices playServices;
+
+    protected State(GameStateManager gsm, PlayServices playServices){
         this.gsm = gsm;
+        this.playServices = playServices;
         cam = new OrthographicCamera();
         mouse = new Vector3();
     }
@@ -25,14 +32,4 @@ public abstract class State {
     public abstract void update(float dt);
     public abstract void render(SpriteBatch sb);
     public abstract void dispose();
-
-
-
-
-
-
-
-
-
-
 }

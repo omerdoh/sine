@@ -1,6 +1,7 @@
 package com.xiangfan.sine.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.xiangfan.sine.playservices.PlayServices;
 
 import java.util.Stack;
 
@@ -12,11 +13,11 @@ public class GameStateManager {
 
     private Stack<State> states;
 
-    public GameStateManager(){
+    public GameStateManager(PlayServices playServices) {
         states = new Stack<State>();
     }
 
-    public void push(State state){
+    public void push(State state) {
         states.push(state);
     }
 

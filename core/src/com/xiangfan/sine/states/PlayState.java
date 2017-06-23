@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.Timer;
 import com.xiangfan.sine.SineGame;
+import com.xiangfan.sine.playservices.PlayServices;
 import com.xiangfan.sine.sprites.Bird;
 import com.xiangfan.sine.sprites.Tube;
 
@@ -40,8 +41,8 @@ public class PlayState extends State {
     private Sound dead;
 
 
-    protected PlayState(GameStateManager gsm) {
-        super(gsm);
+    protected PlayState(GameStateManager gsm, PlayServices playServices) {
+        super(gsm, playServices);
         cam.setToOrtho(false, SineGame.WIDTH / 2, SineGame.HEIGHT / 2);
         bird = new Bird(50, 300);
         bg = new Texture("bg.png");
@@ -97,7 +98,7 @@ public class PlayState extends State {
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        gsm.set(new GameOverState(gsm, score));
+                        gsm.set(new GameOverState(gsm, score, playServices));
                     }
                 }, 1.0f);
                 return;
@@ -121,7 +122,7 @@ public class PlayState extends State {
                     Timer.schedule(new Timer.Task() {
                         @Override
                         public void run() {
-                            gsm.set(new GameOverState(gsm, score));
+                            gsm.set(new GameOverState(gsm, score, playServices));
                         }
                     }, 1.0f);
                     return;

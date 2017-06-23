@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.xiangfan.sine.playservices.PlayServices;
 import com.xiangfan.sine.states.GameStateManager;
 import com.xiangfan.sine.states.MenuState;
 
@@ -17,16 +18,23 @@ public class SineGame extends ApplicationAdapter {
 	private	SpriteBatch batch;
 	private Music music;
 
+	public static PlayServices playServices;
+
+	public SineGame(PlayServices playServices)
+	{
+		this.playServices = playServices;
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		gsm = new GameStateManager();
+		gsm = new GameStateManager(playServices);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
 		music.setLooping(true);
 		music.setVolume(0.1f);
 		music.play();
-		gsm.push(new MenuState(gsm));
+		gsm.push(new MenuState(gsm, playServices));
 	}
 
 	@Override
