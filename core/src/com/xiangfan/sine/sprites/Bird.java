@@ -18,6 +18,7 @@ public class Bird {
     public Texture getBird() {
         return bird;
     }
+    public int BIRD_DIAMETER = 10;
 
     private static final int MOVEMENT = 150;
     private int GRAVITY = -10;
@@ -31,8 +32,8 @@ public class Bird {
     public Bird(int x, int y) {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
-        bird = new Texture("bird.png");
-        bounds = new Rectangle(x - bird.getWidth() / 2, y - bird.getHeight() / 2, bird.getWidth(), bird.getHeight());
+        bird = new Texture("sphere.png");
+        bounds = new Rectangle(x - BIRD_DIAMETER / 2, y - BIRD_DIAMETER / 2, BIRD_DIAMETER, BIRD_DIAMETER);
         flap = Gdx.audio.newSound(Gdx.files.internal("flap.wav"));
     }
 
@@ -52,7 +53,7 @@ public class Bird {
         }
 
         velocity.scl(1 / dt);
-        bounds.setPosition(position.x - bird.getWidth() / 2, position.y - bird.getHeight() / 2);
+        bounds.setPosition(position.x - BIRD_DIAMETER / 2, position.y - BIRD_DIAMETER / 2);
     }
 
     public void jump(){

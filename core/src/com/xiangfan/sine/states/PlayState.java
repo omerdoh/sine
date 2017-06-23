@@ -91,8 +91,8 @@ public class PlayState extends State {
 
             cam.position.x = bird.getPosition().x;
 
-            if (bird.getPosition().y - bird.getBird().getHeight() / 2 <= ground.getHeight() + GROUND_Y_OFFSET ||
-                    bird.getPosition().y + bird.getBird().getHeight() / 2 >= cam.viewportHeight) {
+            if (bird.getPosition().y - bird.BIRD_DIAMETER / 2 <= ground.getHeight() + GROUND_Y_OFFSET ||
+                    bird.getPosition().y + bird.BIRD_DIAMETER / 2 >= cam.viewportHeight) {
                 collision = true;
                 dead.play();
                 Timer.schedule(new Timer.Task() {
@@ -138,20 +138,6 @@ public class PlayState extends State {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(bg, cam.position.x - (cam.viewportWidth / 2), 0);
-
-        sb.draw(bird.getBird(),
-                bird.getPosition().x - bird.getBird().getWidth() / 2,
-                bird.getPosition().y - bird.getBird().getHeight() / 2);
-
-        for (Tube tube : tubes){
-            sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
-            sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
-        }
-
-        sb.draw(ground, groundPos1.x, groundPos1.y);
-        sb.draw(ground, groundPos2.x, groundPos2.y);
-
-        font.draw(sb, Integer.toString(score), cam.position.x - 7, cam.position.y + 190);
         sb.end();
 
         if (path.size > 0) {
@@ -163,6 +149,25 @@ public class PlayState extends State {
             }
             sr.end();
         }
+
+        sb.begin();
+        sb.draw(bird.getBird(),
+                bird.getPosition().x - bird.BIRD_DIAMETER / 2,
+                bird.getPosition().y - bird.BIRD_DIAMETER / 2,
+                bird.BIRD_DIAMETER, bird.BIRD_DIAMETER);
+
+
+        for (Tube tube : tubes){
+            sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
+            sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
+        }
+
+        sb.draw(ground, groundPos1.x, groundPos1.y);
+        sb.draw(ground, groundPos2.x, groundPos2.y);
+
+        font.draw(sb, Integer.toString(score), cam.position.x - 7, cam.position.y + 190);
+
+        sb.end();
     }
 
     @Override
